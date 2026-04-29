@@ -1,0 +1,29 @@
+version: '3.9'
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: elvo
+      POSTGRES_PASSWORD: elvo_password
+      POSTGRES_DB: elvo_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+
+  backend:
+    build: ./elvo-backend
+    env_file: ./elvo-backend/.env
+    ports:
+      - "3000:3000"
+    depends_on:
+      - postgres
+      - redis
+
+volumes:
+  postgres_data:
